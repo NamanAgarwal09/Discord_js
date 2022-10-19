@@ -22,7 +22,7 @@ client.login(token);
 // When the client is ready, run this code (only once)
 client.on('ready', () => {
     console.log(`Our bot has locked in by: ${client.user.tag}`);
-    const channel = client.channels.cache.get('1030418901416300585');
+    const channel = client.channels.cache.get('ENTER_ID_HERE');
     channel.send({
         content: 'select your role:',
         components: [
@@ -38,7 +38,7 @@ client.on('ready', () => {
 
 //Setting different Roles for the client+
 const ROLES  = {
-    polor: '1031761190445142066',
+    polor: 'ENTER_ID_HERE',
    
 };
 
@@ -68,13 +68,8 @@ client.on('interactionCreate', async (interaction) => {
                 });
             });
     }
-    
 });
 
 function Ass(role, member) {
     return `The ${role} is added to you ${member}`;
-
 }
-
-
-
