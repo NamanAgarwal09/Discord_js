@@ -77,7 +77,7 @@ async function Ass(role, member, interaction) {
     channel01.send(`Welcome to the brifing section ${member} ${interaction.guild.memberCount}`);
 
          
-
+//THIS SECTION IS CAUSED THE BUG
     let roleID = "1034858031067959306";
     // let membersWithRole = interaction.guild.roles.cache.getAllUsers(roleID).members;
     let membersWithRole =  await interaction.guild.roles.cache.fetch(roleID).members;
