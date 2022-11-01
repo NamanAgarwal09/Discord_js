@@ -1,14 +1,7 @@
 // Require the necessary discord.js classes
-const { messageLink, channelLink } = require('discord.js');
 const Discord = require('discord.js');
-const { promises } = require('nodemailer/lib/xoauth2');
-const { connect } = require('undici');
-const { Client, GatewayIntentBits, REST, Routes, ActionRowBuilder, ButtonBuilder, ButtonStyle } = Discord;
-const { token } = require('./config.json');
-
-const points_1 = require("./database/points");
-
-
+const { Client, GatewayIntentBits, ActionRowBuilder, ButtonBuilder, ButtonStyle } = Discord;
+const config = require('./config.json')
 
 // Create a new client instance
 const client = new Client({
@@ -16,23 +9,21 @@ const client = new Client({
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMembers,
     ],
 });
 
-// Login to Discord with your client's token
-client.login(token);
-
 // When the client is ready, run this code (only once)
-client.on('ready', () => {
+client.on('ready', async () => {
     console.log(`Our bot has locked in by: ${client.user.tag}`);
-    const channel = client.channels.cache.get('1030418901416300585');
+    const channel = client.channels.cache.get(config.ChannelId);
     channel.send({
         content: 'select your role:',
         components: [
             new ActionRowBuilder().setComponents(
-                new ButtonBuilder().setCustomId('brifing')
+                new ButtonBuilder().setCustomId('Close')
                     .setLabel('Close').setStyle(ButtonStyle.Primary),
-                new ButtonBuilder().setCustomId('Snowsqual')
+                new ButtonBuilder().setCustomId('Near')
                     .setLabel('Near').setStyle(ButtonStyle.Primary),
             )],
     });
@@ -40,8 +31,9 @@ client.on('ready', () => {
 
 //Setting different Roles for the client+
 const ROLES = {
-    brifing: '1034858031067959306',
-    polor: '1031761190445142066',
+    polor: config.polor,
+    Close: config.Close,
+    Near: config.Near
 };
 
 
@@ -55,79 +47,74 @@ client.on('interactionCreate', async (interaction) => {
         if (!role) {
             return interaction.reply({ content: 'Role not found', ephemeral: true });
         }
-        return interaction.member.roles.add(role).then((member) => {
+
+        return interaction.member.roles.add(role).then(async (member) => {
             interaction.reply({
-                content: Ass(role, member, interaction),
+                content: await Set_Voice_Channel_Name(role, member, interaction),
                 ephemeral: true,
             })
         }).catch((err) => {
             console.log(err);
             return interaction.reply({
-                content: `Some thing went wrong. The ${role} is not added to you ${member}`,
+                content: `Some thing went wrong. The ${role} is not added to you ${interaction.member}`,
                 ephemeral: true,
             });
         });
     }
 });
 
-async function Ass(role, member, interaction) {
 
-    const channel01 = client.channels.cache.find(channel => channel.id === '1030418942172336179')
+async function Set_Voice_Channel_Name(role, member, interaction) {
+    const channel01 = client.channels.cache.find(channel => channel.id === config.brifingChannel)
+    channel01.send(`Welcome to the brifing section ${member}`);
 
-    channel01.send(`Welcome to the brifing section ${member} ${interaction.guild.memberCount}`);
-
-         
-//THIS SECTION IS CAUSED THE BUG
-    let roleID = "1034858031067959306";
-    // let membersWithRole = interaction.guild.roles.cache.getAllUsers(roleID).members;
-    let membersWithRole =  await interaction.guild.roles.cache.fetch(roleID).members;
-    console.log(`Got ${membersWithRole.size} members with that role.`);                         
-
-
-
-var Numbers_of_users = 500;
-
+    const members = await interaction.guild.members.fetch()
+    const membersWithRole01 = members.filter(x => x.roles.cache.has(config.Close))
+    const membersWithRole02 = members.filter(x => x.roles.cache.has(config.Near))
+    var Numbers_of_users = membersWithRole01.size + membersWithRole02.size;
 
     if (Numbers_of_users >= 0 && Numbers_of_users <= 100) {
-        const Add_Voice_Crole = interaction.guild.roles.cache.get('1032955770951712778');
+        const Add_Voice_Crole = interaction.guild.roles.cache.get(config.SnowsquallRole);
         const Added_Voice_Crole = member.roles.add(Add_Voice_Crole)
-        const channel01 = client.channels.cache.find(channel => channel.id === '1030787044433203260')
+        const channel01 = client.channels.cache.find(channel => channel.id === config.SnowsquallChannel)
         channel01.setName(`Snowsquall: ${Numbers_of_users}/100`);
-        // pointsADD(member);
     }
     else if (Numbers_of_users >= 101 && Numbers_of_users <= 500) {
-        const Add_Voice_Crole = interaction.guild.roles.cache.get('1035081493330006086');
+        const Add_Voice_Crole = interaction.guild.roles.cache.get(config.ThundersnowRole);
         const Added_Voice_Crole = member.roles.add(Add_Voice_Crole)
-        const channel01 = client.channels.cache.find(channel => channel.id === '1032893322605363233')
-        channel01.setName(`Thundersnow: ${Numbers_of_users}/500`);
+        const channel01 = client.channels.cache.find(channel => channel.id === config.ThundersnowChannel)
+        channel01.setName(`ThunderSnow: ${Numbers_of_users}/500`);
     }
     else if (Numbers_of_users >= 501 && Numbers_of_users <= 1000) {
-        const Add_Voice_Crole = interaction.guild.roles.cache.get('1035082147830190101');
+        const Add_Voice_Crole = interaction.guild.roles.cache.get(config.SnowFlurryRole);
         const Added_Voice_Crole = member.roles.add(Add_Voice_Crole)
-        const channel01 = client.channels.cache.find(channel => channel.id === '1032894075793313812')
-        channel01.setName(`Snow flurry: ${Numbers_of_users}/1000`);
+        const channel01 = client.channels.cache.find(channel => channel.id === config.SnowFlurryChannel)
+        channel01.setName(`Snow Flurry: ${Numbers_of_users}/1000`);
     }
     else if (Numbers_of_users >= 1001 && Numbers_of_users <= 3000) {
-        const Add_Voice_Crole = interaction.guild.roles.cache.get('1035082319779864586');
+        const Add_Voice_Crole = interaction.guild.roles.cache.get(config.LakeEffectSnowRole);
         const Added_Voice_Crole = member.roles.add(Add_Voice_Crole)
-        const channel01 = client.channels.cache.find(channel => channel.id === '1032894244572123146')
-        channel01.setName(`Lake-effect snow: ${Numbers_of_users}/3000`);
+        const channel01 = client.channels.cache.find(channel => channel.id === config.LakeEffectSnowChannel)
+        channel01.setName(`Lake-Effect Snow: ${Numbers_of_users}/3000`);
     }
     else if (Numbers_of_users >= 3001 && Numbers_of_users <= 10000) {
-        const Add_Voice_Crole = interaction.guild.roles.cache.get('1035082851735048283');
+        const Add_Voice_Crole = interaction.guild.roles.cache.get(config.ExtratropicalCycloneRole);
         const Added_Voice_Crole = member.roles.add(Add_Voice_Crole)
-        const channel01 = client.channels.cache.find(channel => channel.id === '1032894444653006848')
+        const channel01 = client.channels.cache.find(channel => channel.id === config.ExtratropicalCycloneChannel)
         channel01.setName(`Extratropical cyclone: ${Numbers_of_users}/10000`);
     }
     else if (Numbers_of_users >= 10001 && Numbers_of_users >= 30000) {
-        const Add_Voice_Crole = interaction.guild.roles.cache.get('1035087537938645043');
+        const Add_Voice_Crole = interaction.guild.roles.cache.get(config.BlizzardRole);
         const Added_Voice_Crole = member.roles.add(Add_Voice_Crole)
-        const channel01 = client.channels.cache.find(channel => channel.id === '1032894485857845341')
+        const channel01 = client.channels.cache.find(channel => channel.id === config.BlizzardChannel)
         channel01.setName(`Blizzard: ${Numbers_of_users}/30000`);
     }
     else {
         console.log('Error occured');
     }
-    return `The ${role} is added to you ${member} ${interaction.guild.memberCount}`;
+    return `The ${role} is added to you ${member}`;
 
 };
+
+// Login to Discord with your client's token
+client.login(config.token);
