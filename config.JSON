@@ -1,4 +1,21 @@
 {
-    "token" : "ENTER_TOKEN_HERE"
-
+    "token": "ENTER_TOKEN_HERE",
+    "ChannelId": "",
+    "polor": "",
+    "brifingChannel": "",
+    "SnowsquallRole": "",
+    "SnowsquallChannel": "",
+    "ThundersnowRole": "",
+    "ThundersnowChannel": "",
+    "SnowFlurryRole": "",
+    "SnowFlurryChannel": "",
+    "LakeEffectSnowRole": "",
+    "LakeEffectSnowChannel": "",
+    "ExtratropicalCycloneRole": "",
+    "ExtratropicalCycloneChannel": "",
+    "BlizzardRole": "",
+    "BlizzardChannel": "",
+    "Close": "",
+    "Near": "",
+    "brifing": ""
 }
